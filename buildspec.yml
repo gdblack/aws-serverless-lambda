@@ -20,6 +20,7 @@ phases:
       - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY_PARAM
       - cd AWSLambdaTest
       - cd AWSLambda1
+      - cd src
       - cd AWSLambda1
       - dotnet clean
       - dotnet restore
