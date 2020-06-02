@@ -29,7 +29,6 @@ namespace AWSLambda1
         public async Task<PreTokenGeneration> FunctionHandler(PreTokenGeneration input, ILambdaContext context)
         {
             context.Logger.LogLine("Just a test");
-            context.Logger.LogLine("Input was: " + input.ToJSON());
             var claimsToAdd = new Dictionary<string, string>();
 
             // In order to standardize your parameters system wide you should store any environment variables
@@ -42,6 +41,7 @@ namespace AWSLambda1
             var role = input.Request.UserAttributes["custom:role"];
             context.Logger.LogLine(role);
             context.Logger.LogLine(cognitoDb);
+            context.Logger.LogLine("Before attempting to connect to DB");
             var claims = new List<Claim>();
             try
             {
