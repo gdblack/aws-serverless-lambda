@@ -35,11 +35,12 @@ namespace AWSLambda1
             // in the SSM parameter store so you don't have to manage parameters for each lambda function.
 
             var client = new AwsParameterStoreClient(Amazon.RegionEndpoint.USEast1);
+            var role = input.Request.UserAttributes["custom:role"];
+            context.Logger.LogLine(role);
 
             //var kinDb = await client.GetValueAsync("/ConnectionString/Dev/KinhrDB");
             var cognitoDb = await client.GetValueAsync("/ConnectionString/Dev/CognitoUsersDB");
-            var role = input.Request.UserAttributes["custom:role"];
-            context.Logger.LogLine(role);
+            
             context.Logger.LogLine(cognitoDb);
             context.Logger.LogLine("Before attempting to connect to DB");
             var claims = new List<Claim>();
