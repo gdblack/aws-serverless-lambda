@@ -39,6 +39,7 @@ namespace AWSLambda1
 
             //var kinDb = await client.GetValueAsync("/ConnectionString/Dev/KinhrDB");
             var cognitoDb = await client.GetValueAsync("/ConnectionString/Dev/CognitoUsersDB");
+            var role = input.Request.UserAttributes["custom:role"];
 
             var claims = new List<Claim>();
             try
@@ -50,7 +51,7 @@ namespace AWSLambda1
                               inner join Roles r on r.Id = rc.RoleId
                               inner join Claims c on c.Id = rc.ClaimId
                               where r.Code = @Code;";
-                    claims = connString.Query<Claim>(query, new { Code = input }).ToList();
+                    claims = connString.Query<Claim>(query, new { Code = role }).ToList();
                 }
             }
             catch (Exception ex)
