@@ -26,7 +26,7 @@ namespace AWSLambda1
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public JObject FunctionHandler(JObject input, ILambdaContext context)
+        public string FunctionHandler(string input, ILambdaContext context)
         {
 
             // In order to standardize your parameters system wide you should store any environment variables
@@ -54,7 +54,7 @@ namespace AWSLambda1
             //{
             //    throw ex;
             //}
-            context.Logger.LogLine("Input was: " + input);
+            
 
             return input;
         }
