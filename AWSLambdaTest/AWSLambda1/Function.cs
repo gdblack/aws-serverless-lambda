@@ -9,6 +9,7 @@ using Dapper;
 using Amazon.Lambda.Core;
 using AWSLambda1.Domain;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
@@ -25,9 +26,9 @@ namespace AWSLambda1
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public CognitoEvent FunctionHandler(CognitoEvent input, ILambdaContext context)
+        public JObject FunctionHandler(JObject input, ILambdaContext context)
         {
-            
+
             // In order to standardize your parameters system wide you should store any environment variables
             // in the SSM parameter store so you don't have to manage parameters for each lambda function.
 
@@ -53,8 +54,7 @@ namespace AWSLambda1
             //{
             //    throw ex;
             //}
-            
-            LambdaLogger.Log(input.EventType);
+            context.Logger.LogLine("Input was: " + input);
 
             return input;
         }
