@@ -41,6 +41,7 @@ namespace AWSLambda1
             var cognitoDb = await client.GetValueAsync("/ConnectionString/Dev/CognitoUsersDB");
             var role = input.Request.UserAttributes["custom:role"];
             context.Logger.LogLine(role);
+            context.Logger.LogLine(cognitoDb);
             var claims = new List<Claim>();
             try
             {
