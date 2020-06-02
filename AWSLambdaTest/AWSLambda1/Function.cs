@@ -14,7 +14,7 @@ using Newtonsoft.Json.Serialization;
 using JsonProperty = Newtonsoft.Json.Serialization.JsonProperty;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
-[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
+[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
 
 namespace AWSLambda1
 {
