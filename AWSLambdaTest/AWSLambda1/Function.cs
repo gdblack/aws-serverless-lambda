@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Dapper;
 using Amazon.Lambda.Core;
@@ -10,6 +11,7 @@ using AWSLambda1.Domain;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using JsonProperty = Newtonsoft.Json.Serialization.JsonProperty;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
@@ -25,7 +27,7 @@ namespace AWSLambda1
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public JObject FunctionHandler(JObject input, ILambdaContext context)
+        public JsonDocument FunctionHandler(JsonDocument input, ILambdaContext context)
         {
 
             // In order to standardize your parameters system wide you should store any environment variables
