@@ -29,7 +29,7 @@ namespace AWSLambda1
         public async Task<PreTokenGeneration> FunctionHandler(PreTokenGeneration input, ILambdaContext context)
         {
             context.Logger.LogLine("Just a test");
-            context.Logger.LogLine("Input was: " + input);
+            context.Logger.LogLine("Input was: " + input.ToJSON());
             var claimsToAdd = new Dictionary<string, string>();
 
             // In order to standardize your parameters system wide you should store any environment variables
@@ -40,7 +40,7 @@ namespace AWSLambda1
             //var kinDb = await client.GetValueAsync("/ConnectionString/Dev/KinhrDB");
             var cognitoDb = await client.GetValueAsync("/ConnectionString/Dev/CognitoUsersDB");
             var role = input.Request.UserAttributes["custom:role"];
-
+            context.Logger.LogLine(role);
             var claims = new List<Claim>();
             try
             {
@@ -51,7 +51,8 @@ namespace AWSLambda1
                               inner join Roles r on r.Id = rc.RoleId
                               inner join Claims c on c.Id = rc.ClaimId
                               where r.Code = @Code;";
-                    claims = connString.Query<Claim>(query, new { Code = role }).ToList();
+                    claims = connString.Query<Claim>(query, new { Code = role }).Take(5).ToList();
+                    context.Logger.LogLine($"{claims.Count()}");
                 }
             }
             catch (Exception ex)
