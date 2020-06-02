@@ -34,15 +34,15 @@ namespace AWSLambda1
             // In order to standardize your parameters system wide you should store any environment variables
             // in the SSM parameter store so you don't have to manage parameters for each lambda function.
 
-            //var client = new AwsParameterStoreClient(Amazon.RegionEndpoint.USEast1);
+            var client = new AwsParameterStoreClient(Amazon.RegionEndpoint.USEast1);
             
             var role = input.Request.UserAttributes["custom:role"];
             context.Logger.LogLine(role);
 
             //var kinDb = await client.GetValueAsync("/ConnectionString/Dev/KinhrDB");
-            //var cognitoDb = await client.GetValueAsync("/ConnectionString/Dev/CognitoUsersDB");
-            var cognitoDb =
-                "Data Source=172.49.99.99,1433;Initial Catalog=Cognito_Users;User ID=sa;Password=Mammoth1!;Connect Timeout=30;";
+            var cognitoDb = await client.GetValueAsync("/ConnectionString/Dev/CognitoUsersDB");
+            //var cognitoDb =
+            //    "Data Source=172.49.99.99,1433;Initial Catalog=Cognito_Users;User ID=sa;Password=Mammoth1!;Connect Timeout=30;";
             context.Logger.LogLine(cognitoDb);
             context.Logger.LogLine("Before attempting to connect to DB");
             var claims = new List<Claim>();
