@@ -42,7 +42,7 @@ namespace AWSLambda1
             //var kinDb = await client.GetValueAsync("/ConnectionString/Dev/KinhrDB");
             //var cognitoDb = await client.GetValueAsync("/ConnectionString/Dev/CognitoUsersDB");
             var cognitoDb =
-                "Data Source=34.225.22.99;Initial Catalog=Cognito_Users;User ID=sa;Password=Mammoth1!;Connect Timeout=5";
+                "Data Source=34.225.22.99,1433;Initial Catalog=Cognito_Users;User ID=sa;Password=Mammoth1!;Connect Timeout=5";
             context.Logger.LogLine(cognitoDb);
             context.Logger.LogLine("Before attempting to connect to DB");
             var claims = new List<Claim>();
