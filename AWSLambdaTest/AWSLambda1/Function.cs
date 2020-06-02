@@ -26,35 +26,43 @@ namespace AWSLambda1
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public JObject FunctionHandler(JObject input, ILambdaContext context)
+        public async Task<PreTokenGeneration> FunctionHandler(PreTokenGeneration input, ILambdaContext context)
         {
             context.Logger.LogLine("Just a test");
+            context.Logger.LogLine("Input was: " + input);
+            var claimsToAdd = new Dictionary<string, string>();
+
             // In order to standardize your parameters system wide you should store any environment variables
             // in the SSM parameter store so you don't have to manage parameters for each lambda function.
 
-            //var client = new AwsParameterStoreClient(Amazon.RegionEndpoint.USEast1);
+            var client = new AwsParameterStoreClient(Amazon.RegionEndpoint.USEast1);
 
             //var kinDb = await client.GetValueAsync("/ConnectionString/Dev/KinhrDB");
-            //var cognitoDb = await client.GetValueAsync("/ConnectionString/Dev/CognitoUsersDB");
+            var cognitoDb = await client.GetValueAsync("/ConnectionString/Dev/CognitoUsersDB");
 
-            //var response = new List<Claim>();
-            //try
-            //{
-            //    using (var connString = new SqlConnection(cognitoDb))
-            //    {
-            //        connString.Open();
-            //        var query = @"select c.* from RoleClaims rc
-            //                  inner join Roles r on r.Id = rc.RoleId
-            //                  inner join Claims c on c.Id = rc.ClaimId
-            //                  where r.Code = @Code;";
-            //        response = connString.Query<Claim>(query, new { Code = input }).ToList();
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw ex;
-            //}
-            context.Logger.LogLine("Input was: " + input);
+            var claims = new List<Claim>();
+            try
+            {
+                using (var connString = new SqlConnection(cognitoDb))
+                {
+                    connString.Open();
+                    var query = @"select c.* from RoleClaims rc
+                              inner join Roles r on r.Id = rc.RoleId
+                              inner join Claims c on c.Id = rc.ClaimId
+                              where r.Code = @Code;";
+                    claims = connString.Query<Claim>(query, new { Code = input }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                context.Logger.LogLine(ex.Message);
+            }
+
+            foreach (var claim in claims)
+            {
+                claimsToAdd.Add(claim.Type, claim.Value);
+            }
+            
 
             return input;
         }
