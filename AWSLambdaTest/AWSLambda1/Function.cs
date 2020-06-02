@@ -4,7 +4,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Amazon.Lambda.CognitoEvents;
 using Dapper;
 using Amazon.Lambda.Core;
 using AWSLambda1.Domain;
@@ -26,7 +25,7 @@ namespace AWSLambda1
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public string FunctionHandler(string input, ILambdaContext context)
+        public JObject FunctionHandler(JObject input, ILambdaContext context)
         {
 
             // In order to standardize your parameters system wide you should store any environment variables
@@ -54,7 +53,7 @@ namespace AWSLambda1
             //{
             //    throw ex;
             //}
-            
+            context.Logger.LogLine("Input was: " + input);
 
             return input;
         }
