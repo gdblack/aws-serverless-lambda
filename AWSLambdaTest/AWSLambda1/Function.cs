@@ -20,16 +20,15 @@ namespace AWSLambda1
 {
     public class Function
     {
-        
         /// <summary>
         /// A simple function that takes a string and does a ToUpper
         /// </summary>
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public JsonDocument FunctionHandler(JsonDocument input, ILambdaContext context)
+        public JObject FunctionHandler(JObject input, ILambdaContext context)
         {
-
+            context.Logger.LogLine("Just a test");
             // In order to standardize your parameters system wide you should store any environment variables
             // in the SSM parameter store so you don't have to manage parameters for each lambda function.
 
