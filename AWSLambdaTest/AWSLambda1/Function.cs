@@ -29,55 +29,50 @@ namespace AWSLambda1
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<string> FunctionHandler(string input, ILambdaContext context)
+        public async Task<PreTokenGeneration> FunctionHandler(PreTokenGeneration input, ILambdaContext context)
         {
-            //context.Logger.LogLine("Just a test");
-            //var claimsToAdd = new Dictionary<string, string>();
+            context.Logger.LogLine("Just a test");
+            var claimsToAdd = new Dictionary<string, string>();
 
-            //// In order to standardize your parameters system wide you should store any environment variables
-            //// in the SSM parameter store so you don't have to manage parameters for each lambda function.
+            // In order to standardize your parameters system wide you should store any environment variables
+            // in the SSM parameter store so you don't have to manage parameters for each lambda function.
 
-            //var client = new AwsParameterStoreClient(Amazon.RegionEndpoint.USEast1);
-
-            //var role = input.Request.UserAttributes["custom:role"];
-            //context.Logger.LogLine(role);
-
-            ////var kinDb = await client.GetValueAsync("/ConnectionString/Dev/KinhrDB");
-            //var cognitoDb = await client.GetValueAsync("/ConnectionString/Dev/CognitoUsersDB");
-            ////var cognitoDb =
-            ////    "Data Source=172.49.99.99,1433;Initial Catalog=Cognito_Users;User ID=sa;Password=Mammoth1!;Connect Timeout=30;";
-            //context.Logger.LogLine(cognitoDb);
-            //context.Logger.LogLine("Before attempting to connect to DB");
-            //var claims = new List<Claim>();
-            //try
-            //{
-            //    using (var connString = new SqlConnection(cognitoDb))
-            //    {
-            //        connString.Open();
-            //        var query = @"select c.* from RoleClaims rc
-            //                  inner join Roles r on r.Id = rc.RoleId
-            //                  inner join Claims c on c.Id = rc.ClaimId
-            //                  where r.Code = @Code;";
-            //        claims = connString.Query<Claim>(query, new { Code = role }).Take(5).ToList();
-            //        context.Logger.LogLine($"{claims.Count()}");
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    context.Logger.LogLine(ex.Message);
-            //}
-
-            //foreach (var claim in claims)
-            //{
-            //    claimsToAdd.Add(claim.Type, claim.Value);
-            //}
-
-            //input.Response.ClaimsToAddOrOverride = claimsToAdd;
             var client = new AwsParameterStoreClient(Amazon.RegionEndpoint.USEast1);
+            
+            var role = input.Request.UserAttributes["custom:role"];
+            context.Logger.LogLine(role);
 
-            var value = await client.GetValueAsync("Test-Parameter");
+            //var kinDb = await client.GetValueAsync("/ConnectionString/Dev/KinhrDB");
+            var cognitoDb = await client.GetValueAsync("/ConnectionString/Dev/CognitoUsersDB");
 
-            return value?.ToUpper();
+            context.Logger.LogLine(cognitoDb);
+            context.Logger.LogLine("Before attempting to connect to DB");
+            var claims = new List<Claim>();
+            try
+            {
+                using (var connString = new SqlConnection(cognitoDb))
+                {
+                    connString.Open();
+                    var query = @"select c.* from RoleClaims rc
+                              inner join Roles r on r.Id = rc.RoleId
+                              inner join Claims c on c.Id = rc.ClaimId
+                              where r.Code = @Code;";
+                    claims = connString.Query<Claim>(query, new { Code = role }).Take(5).ToList();
+                    context.Logger.LogLine($"{claims.Count()}");
+                }
+            }
+            catch (Exception ex)
+            {
+                context.Logger.LogLine(ex.Message);
+            }
+
+            foreach (var claim in claims)
+            {
+                claimsToAdd.Add(claim.Type, claim.Value);
+            }
+
+            input.Response.ClaimsToAddOrOverride = claimsToAdd;
+            return input;
         }
     }
 
