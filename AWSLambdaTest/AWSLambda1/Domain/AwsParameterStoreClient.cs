@@ -26,9 +26,7 @@ namespace AWSLambda1.Domain
             AWSCredentials awsCredentials;
             AmazonSimpleSystemsManagementClient ssmClient;
 
-            ssmClient = chain.TryGetAWSCredentials("default", out awsCredentials)
-                ? new AmazonSimpleSystemsManagementClient(awsCredentials, _region)
-                : new AmazonSimpleSystemsManagementClient(_region);
+            ssmClient = new AmazonSimpleSystemsManagementClient(_region);
 
             var response = await ssmClient.GetParameterAsync(new GetParameterRequest
             {
