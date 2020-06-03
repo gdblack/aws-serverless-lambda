@@ -7,6 +7,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Dapper;
 using Amazon.Lambda.Core;
+using Amazon.Runtime;
+using Amazon.Runtime.CredentialManagement;
+using Amazon.SimpleSystemsManagement;
 using AWSLambda1.Domain;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -33,7 +36,12 @@ namespace AWSLambda1
 
             // In order to standardize your parameters system wide you should store any environment variables
             // in the SSM parameter store so you don't have to manage parameters for each lambda function.
+            var chain = new CredentialProfileStoreChain();
+            AWSCredentials awsCredentials;
 
+            var hasCreds = chain.TryGetAWSCredentials("default", out awsCredentials);
+            context.Logger.LogLine($"{hasCreds}");
+            context.Logger.LogLine(awsCredentials.ToJSON());
             var client = new AwsParameterStoreClient(Amazon.RegionEndpoint.USEast1);
             
             var role = input.Request.UserAttributes["custom:role"];
